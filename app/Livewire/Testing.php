@@ -4,15 +4,19 @@ namespace App\Livewire;
 
 use App\Models\User;
 use Livewire\Component;
+use Livewire\WithPagination;
+
 
 class Testing extends Component
 {
+    use WithPagination;
     public $name='';
     public $email='';
     public $password='';
 
     public function register()
     {
+        sleep(2);
         $this->validate([
             'name'=>'required|min:4',
             'email'=>'required|email|unique:users,email',
@@ -33,7 +37,7 @@ class Testing extends Component
     {
         return view('livewire.testing',
         [
-            'users'=> User::all(),
+            'users'=> User::paginate(5),
         ]);
     }
 }

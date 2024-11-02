@@ -9,8 +9,19 @@
 <body>
     <form method="POST" action="{{ route('register') }}">
         @csrf
+
+        @if ($errors->any())
+            <div>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div>
-            <label for="name">Name</label>
+            <label for="name">Names</label>
             <input type="text" name="name" required>
         </div>
         <div>

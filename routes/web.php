@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisteredUserController;
+
+// Registration route
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store'])->name('register.store');
 
 
 Route::get('/', function () {
@@ -22,8 +27,8 @@ Route::middleware([
     })->name('testing');
 })
 ->group(function () {
-    Route::get('/input', function () {
-        return view('input');
-    })->name('input');
+    Route::get('/products', function () {
+        return view('products');
+    })->name('products');
 });
 
