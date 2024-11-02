@@ -31,7 +31,10 @@ class Testing extends Component
     }
     public function render()
     {
-        return view('livewire.testing');
+        return view('livewire.testing',
+        [
+            'users'=> User::all(),
+        ]);
     }
 }
 
