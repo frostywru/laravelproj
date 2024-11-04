@@ -67,4 +67,43 @@
             Loading...
         </button>
     </div>
+    <!-- Table Container -->
+    <div class="relative mb-10 mt-10 max-w-4xl mx-auto rounded-lg shadow-lg overflow-hidden">
+            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Product Name
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Price
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Quantity
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Condition
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Description
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($products as $product)
+                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->product_name }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->price }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->quantity }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->condition }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->description }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    <div>
+        {{ $products->links() }}
+
+    </div>
 </div>

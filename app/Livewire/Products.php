@@ -45,7 +45,7 @@ class Products extends Component
     {
         return view('livewire.products',
         [
-            'products'=> Product::paginate(5),
+            'products'=> Product::paginate(3),
         ]);
     }
 }
