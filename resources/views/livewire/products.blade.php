@@ -68,42 +68,114 @@
         </button>
     </div>
     <!-- Table Container -->
-    <div class="relative mb-10 mt-10 max-w-4xl mx-auto rounded-lg shadow-lg overflow-hidden">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    <tr>
-                        <th scope="col" class="px-6 py-3">
-                            Product Name
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Price
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Quantity
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Condition
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            Description
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($products as $product)
-                    <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->product_name }}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->price }}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->quantity }}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->condition }}</td>
-                        <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ $product->description }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
     <div>
-        {{ $products->links() }}
+    @if (session()->has('message'))
+        <div class="alert alert-success">{{ session('message') }}</div>
+    @endif
 
+    <table class="table-auto w-full">
+        <thead>
+            <tr>
+                <th class="px-6 py-4">Product Name</th>
+                <th class="px-6 py-4">Price</th>
+                <th class="px-6 py-4">Quantity</th>
+                <th class="px-6 py-4">Condition</th>
+                <th class="px-6 py-4">Description</th>
+                <th class="px-6 py-4">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($products as $product)
+                <tr>
+                    <td class="px-6 py-4">{{ $product->product_name }}</td>
+                    <td class="px-6 py-4">{{ $product->price }}</td>
+                    <td class="px-6 py-4">{{ $product->quantity }}</td>
+                    <td class="px-6 py-4">{{ $product->condition }}</td>
+                    <td class="px-6 py-4">{{ $product->description }}</td>
+                    <td class="px-6 py-4">
+                        <button wire:click="openEditModal({{ $product->id }})" class="text-blue-600">Edit</button>
+                        <button wire:click="openDeleteModal({{ $product->id }})" class="text-red-600">Delete</button>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+        </table>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div x-data="{ open: @entangle('isEditModalOpen') }">
+        <div x-show="open" class="fixed inset-0 flex items-center justify-center z-50">
+            <div class="bg-white dark:bg-gray-800 w-96 p-6 rounded-lg shadow-lg">
+                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Edit Product</h2>
+                <form wire:submit.prevent="updateProduct">
+                    <!-- Product Name -->
+                    <div class="mt-4">
+                        <label for="product_name" class="block text-gray-700 dark:text-gray-300">Product Name</label>
+                        <input type="text" wire:model="product_name" id="product_name" class="mt-2 p-2 w-full border rounded" />
+                        @error('product_name') <span class="text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Price -->
+                    <div class="mt-4">
+                        <label for="price" class="block text-gray-700 dark:text-gray-300">Price</label>
+                        <input type="number" wire:model="price" id="price" class="mt-2 p-2 w-full border rounded" />
+                        @error('price') <span class="text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="mt-4">
+                        <label for="quantity" class="block text-gray-700 dark:text-gray-300">Quantity</label>
+                        <input type="number" wire:model="quantity" id="quantity" class="mt-2 p-2 w-full border rounded" />
+                        @error('quantity') <span class="text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Condition -->
+                    <div class="mt-4">
+                        <label for="condition" class="block text-gray-700 dark:text-gray-300">Condition</label>
+                        <select wire:model="condition" id="condition" class="mt-2 p-2 w-full border rounded">
+                            <option value="New">New</option>
+                            <option value="Slightly Used">Slightly Used</option>
+                            <option value="Old">Old</option>
+                        </select>
+                        @error('condition') <span class="text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mt-4">
+                        <label for="description" class="block text-gray-700 dark:text-gray-300">Description</label>
+                        <textarea wire:model="description" id="description" class="mt-2 p-2 w-full border rounded"></textarea>
+                        @error('description') <span class="text-red-500">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="mt-4 flex justify-end">
+                        <button type="button" wire:click="$set('isEditModalOpen', false)" class="mr-2 bg-gray-300 text-black py-2 px-4 rounded">Cancel</button>
+                        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Overlay -->
+        <div x-show="open" x-transition.opacity class="fixed inset-0 bg-black opacity-50"></div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div x-data="{ open: @entangle('isDeleteModalOpen') }">
+        <div x-show="open" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+            <div class="bg-white p-6 rounded shadow-md">
+                <h2 class="text-lg font-semibold mb-4">Are you sure you want to delete this product?</h2>
+                <div class="flex justify-end">
+                    <button @click="open = false" class="px-4 py-2 bg-gray-300 text-gray-700 rounded mr-2">Cancel</button>
+                    <button wire:click="deleteProduct" class="px-4 py-2 bg-red-600 text-white rounded">Delete</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+<script>
+    Livewire.on('refreshProducts', () => {
+        // Refresh the page or trigger a data reload for products
+        Livewire.emit('render');
+    });
+</script>
